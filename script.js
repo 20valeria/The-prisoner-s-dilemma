@@ -394,7 +394,6 @@ async function playTournament(selectedStrategies, rounds, matches) {
     
     const tournamentTitle = document.createElement('div');
     tournamentTitle.className = 'results-title';
-
     tournamentContainer.appendChild(tournamentTitle);
     
     const resultsContainer = document.createElement('div');
