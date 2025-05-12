@@ -1,9 +1,8 @@
 // Полный список стратегий с описаниями и классификацией
-// Обновленный список стратегий
 const strategies = [
     { 
         name: "Tit for Tat", 
-        description: "Начинает с сотрудничества. На каждом следующем ходу повторяет предыдущий ход оппонента: если тот сотрудничал — отвечает сотрудничеством, если предал — предаёт.\nОтличается простотой, доброжелательностью и способностью к возмездию. Не провоцирует первым, но быстро наказывает за предательство.", 
+        description: "Начинает с сотрудничества. На каждом следующем ходу повторяет предыдущий ход оппонента: если тот сотрудничал — отвечает сотрудничеством, если предал — предаёт.", 
         isGood: true,
         function: function(history) {
             if (history.length === 0) return "C";
@@ -12,121 +11,121 @@ const strategies = [
     },
     { 
         name: "Davis", 
-        description: "Начинает с сотрудничества. Если оппонент предал хотя бы в одном из двух последних ходов — отвечает предательством.\nМягкая форма Tit for Tat: допускает единичные ошибки оппонента, не наказывая сразу, но быстро переходит к защите при повторном нарушении.", 
+        description: "Начинает с сотрудничества. Если оппонент предал хотя бы в одном из двух последних ходов — отвечает предательством.", 
         isGood: true,
         function: function(history) {
             if (history.length === 0) return "C";
-            if (history[history.length - 1][1] === "P") return "P";
-            if (history.length >= 2 && history[history.length - 2][1] === "P") return "P";
+            if (history[history.length - 1][1] === "D") return "D";
+            if (history.length >= 2 && history[history.length - 2][1] === "D") return "D";
             return "C";
         }
     },
     { 
         name: "Tideman & Chieruzzi", 
-        description: "Начинает с сотрудничества. Если два последних хода оппонента были предательствами подряд — отвечает предательством. В остальных случаях сотрудничает.\nСтратегия лояльна и не реагирует на единичные предательства. Требует устойчивого агрессивного поведения оппонента, прежде чем отреагировать.", 
+        description: "Начинает с сотрудничества. Если два последних хода оппонента были предательствами подряд — отвечает предательством.", 
         isGood: true,
         function: function(history) {
             if (history.length < 2) return "C";
-            if (history[history.length - 1][1] === "P" && history[history.length - 2][1] === "P") return "P";
+            if (history[history.length - 1][1] === "D" && history[history.length - 2][1] === "D") return "D";
             return "C";
         }
     },
     { 
         name: "Feld", 
-        description: "Начинает с сотрудничества. Переходит к предательству только если оппонент предал три хода подряд.\nЭто одна из самых терпимых стратегий, демонстрирующая максимальное доверие и терпимость к неоднократным ошибкам.", 
+        description: "Начинает с сотрудничества. Переходит к предательству только если оппонент предал три хода подряд.", 
         isGood: false,
         function: function(history) {
             if (history.length < 3) return "C";
-            if (history[history.length - 1][1] === "P" && 
-                history[history.length - 2][1] === "P" && 
-                history[history.length - 3][1] === "P") return "P";
+            if (history[history.length - 1][1] === "D" && 
+                history[history.length - 2][1] === "D" && 
+                history[history.length - 3][1] === "D") return "D";
             return "C";
         }
     },
     { 
         name: "Downing", 
-        description: "Начинает с сотрудничества. Анализирует всю историю: если количество сотрудничеств у оппонента больше или равно количеству предательств — сотрудничает; иначе — предаёт.\nОснована на статистике поведения оппонента, адаптируется под его общий стиль игры, а не отдельные ходы.", 
+        description: "Начинает с сотрудничества. Анализирует всю историю: если количество сотрудничеств у оппонента больше или равно количеству предательств — сотрудничает; иначе — предаёт.", 
         isGood: false,
         function: function(history) {
             if (history.length === 0) return "C";
             const cooperations = history.filter(move => move[1] === "C").length;
-            const defections = history.filter(move => move[1] === "P").length;
-            return cooperations >= defections ? "C" : "P";
+            const defections = history.filter(move => move[1] === "D").length;
+            return cooperations >= defections ? "C" : "D";
         }
     },
     { 
         name: "Graaskamp", 
-        description: "Первые три хода — всегда сотрудничество. После этого анализирует последние три хода оппонента: если среди них два или более предательства, отвечает предательством; иначе — сотрудничеством.\nСтратегия терпелива в начале, позволяет оппоненту установить доверие, но переходит к защите при частых предательствах.", 
+        description: "Первые три хода — всегда сотрудничество. После этого анализирует последние три хода оппонента: если среди них два или более предательства, отвечает предательством.", 
         isGood: false,
         function: function(history) {
             if (history.length < 3) return "C";
             const last3 = history.slice(-3).map(move => move[1]);
-            if (last3.filter(move => move === "P").length >= 2) return "P";
+            if (last3.filter(move => move === "D").length >= 2) return "D";
             return "C";
         }
     },
     { 
         name: "Friedman", 
-        description: "Начинает с сотрудничества. Как только оппонент один раз предал — стратегия переходит к постоянному предательству до конца игры.\nНе прощает ошибок и нацелена на наказание: даже одно предательство полностью разрушает доверие.", 
+        description: "Начинает с сотрудничества. Как только оппонент один раз предал — стратегия переходит к постоянному предательству.", 
         isGood: false,
         function: function(history) {
             if (history.length === 0) return "C";
             for (let move of history) {
-                if (move[1] === "P") return "P";
+                if (move[1] === "D") return "D";
             }
             return "C";
         }
     },
     { 
         name: "Tullock", 
-        description: "Начинает с предательства. Далее инвертирует последний ход оппонента: если тот предал — сотрудничает, если сотрудничал — предаёт.\nАгрессивная и нестабильная стратегия, стремящаяся к доминированию и провокации. Часто приводит к циклам и нестабильной игре.", 
+        description: "Начинает с предательства. Далее инвертирует последний ход оппонента: если тот предал — сотрудничает, если сотрудничал — предаёт.", 
         isGood: false,
         function: function(history) {
-            if (history.length === 0) return "P";
-            return history[history.length - 1][1] === "P" ? "C" : "P";
+            if (history.length === 0) return "D";
+            return history[history.length - 1][1] === "D" ? "C" : "D";
         }
     },
     { 
         name: "Joss", 
-        description: "Начинает с сотрудничества. Как и Tit for Tat, повторяет последний ход оппонента, но если тот сотрудничал, с вероятностью 10% вместо кооперации может выбрать предательство.\nВводит элемент случайности с целью получить выгоду, сохраняя общую схему Tit for Tat. Может неожиданно предать даже после сотрудничества, что делает стратегию менее надёжной.", 
+        description: "Начинает с сотрудничества. Как Tit for Tat, но с 10% вероятностью предаёт после сотрудничества.", 
         isGood: false,
         function: function(history) {
             if (history.length === 0) return "C";
             if (history[history.length - 1][1] === "C") {
-                return Math.random() < 0.1 ? "P" : "C";
+                return Math.random() < 0.1 ? "D" : "C";
             }
-            return "P";
+            return "D";
         }
     },
     { 
         name: "Shubik", 
-        description: "Начинает с сотрудничества. Сотрудничает до тех пор, пока количество предательств оппонента не превысит одно. После второго предательства переходит к постоянному предательству.\nСтратегия прощает одну ошибку, но второй шанс не предоставляет.", 
+        description: "Начинает с сотрудничества. Прощает одно предательство, после второго предательства переходит к постоянному предательству.", 
         isGood: true,
         function: function(history) {
             if (history.length === 0) return "C";
-            const defections = history.filter(move => move[1] === "P").length;
-            return defections <= 1 ? "C" : "P";
+            const defections = history.filter(move => move[1] === "D").length;
+            return defections <= 1 ? "C" : "D";
         }
     },
     { 
         name: "Nydegger", 
-        description: "Начинает с сотрудничества. Во втором ходу — предаёт. В дальнейшем: если два последних хода оппонента были предательствами — отвечает предательством; иначе — сотрудничает.\nИспользует короткую память (два хода) и демонстрирует \"испытательное\" поведение на старте, проверяя реакцию соперника.", 
+        description: "Начинает с сотрудничества. Во втором ходу — предаёт. Затем реагирует на два последовательных предательства.", 
         isGood: true,
         function: function(history) {
             if (history.length === 0) return "C";
-            if (history.length === 1) return "P";
-            if (history[history.length - 1][1] === "P" && history[history.length - 2][1] === "P") return "P";
+            if (history.length === 1) return "D";
+            if (history[history.length - 1][1] === "D" && history[history.length - 2][1] === "D") return "D";
             return "C";
         }
     },
     { 
         name: "Grofman", 
-        description: "Начинает с сотрудничества. Если оппонент предал в последнем ходу — отвечает предательством. В остальных случаях сотрудничает с вероятностью 2/3, иначе — предаёт.\nКомбинирует реакцию на последний ход и элемент случайности, что делает поведение менее предсказуемым.", 
+        description: "Начинает с сотрудничества. Если оппонент предал в последнем ходу — отвечает предательством. Иначе сотрудничает с вероятностью 2/3.", 
         isGood: false,
         function: function(history) {
             if (history.length === 0) return "C";
-            if (history[history.length - 1][1] === "P") return "P";
-            return Math.random() < 2/3 ? "C" : "P";
+            if (history[history.length - 1][1] === "D") return "D";
+            return Math.random() < 2/3 ? "C" : "D";
         }
     }
 ];
@@ -220,11 +219,11 @@ function playMatchWithoutAnimation(strategy1, strategy2, rounds) {
         if (move1 === "C" && move2 === "C") {
             score1 += 3;
             score2 += 3;
-        } else if (move1 === "C" && move2 === "P") {
+        } else if (move1 === "C" && move2 === "D") {
             score2 += 5;
-        } else if (move1 === "P" && move2 === "C") {
+        } else if (move1 === "D" && move2 === "C") {
             score1 += 5;
-        } else if (move1 === "P" && move2 === "P") {
+        } else if (move1 === "D" && move2 === "D") {
             score1 += 1;
             score2 += 1;
         }
@@ -238,7 +237,7 @@ function playMatchWithoutAnimation(strategy1, strategy2, rounds) {
     };
 }
 
-// Функция для проведения одного матча с последовательным выводом ходов (для 2 стратегий)
+// Функция для проведения одного матча с последовательным выводом ходов
 async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     isPlaying = true;
     document.getElementById('stop-button').style.display = 'block';
@@ -259,17 +258,14 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     const resultsContainer = document.createElement('div');
     resultsContainer.className = 'match-results-container';
     
-    // Создаем таблицу для отображения результатов
     const table = document.createElement('table');
     table.className = 'match-table';
     
-    // Заголовок таблицы
     const headerRow = document.createElement('tr');
     const emptyHeader = document.createElement('th');
     emptyHeader.textContent = '';
     headerRow.appendChild(emptyHeader);
     
-    // Добавляем заголовки для всех ходов
     for (let i = 1; i <= rounds; i++) {
         const roundHeader = document.createElement('th');
         roundHeader.textContent = i;
@@ -277,7 +273,6 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     }
     table.appendChild(headerRow);
     
-    // Создаем строки для стратегий
     const strategyRow1 = document.createElement('tr');
     const strategyLabel1 = document.createElement('th');
     strategyLabel1.textContent = strategy1.name;
@@ -291,11 +286,9 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     table.appendChild(strategyRow1);
     table.appendChild(strategyRow2);
     
-    // Добавляем таблицу в контейнер
     resultsContainer.appendChild(table);
     matchContainer.appendChild(resultsContainer);
     
-    // Создаем контейнер для сводки матча
     const summaryContainer = document.createElement('div');
     summaryContainer.className = 'match-summary';
     
@@ -306,11 +299,9 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     
     matchContainer.appendChild(summaryContainer);
     
-    // Добавляем контейнер матча в общий контейнер результатов
     document.getElementById('all-matches-results').appendChild(matchContainer);
     
     try {
-        // Проводим раунды
         for (let i = 0; i < rounds; i++) {
             if (!isPlaying) {
                 throw new Error('Match stopped by user');
@@ -322,22 +313,18 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
             history1.push([move1, move2]);
             history2.push([move2, move1]);
             
-            // Вычисляем очки
             if (move1 === "C" && move2 === "C") {
                 score1 += 3;
                 score2 += 3;
-            } else if (move1 === "C" && move2 === "P") {
-                score1 += 0;
+            } else if (move1 === "C" && move2 === "D") {
                 score2 += 5;
-            } else if (move1 === "P" && move2 === "C") {
+            } else if (move1 === "D" && move2 === "C") {
                 score1 += 5;
-                score2 += 0;
-            } else if (move1 === "P" && move2 === "P") {
+            } else if (move1 === "D" && move2 === "D") {
                 score1 += 1;
                 score2 += 1;
             }
             
-            // Добавляем ходы в таблицу с анимацией
             const cell1 = document.createElement('td');
             cell1.textContent = move1;
             cell1.className = `${move1 === "C" ? 'cooperate' : 'defect'} move-animation`;
@@ -348,7 +335,6 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
             cell2.className = `${move2 === "C" ? 'cooperate' : 'defect'} move-animation`;
             strategyRow2.appendChild(cell2);
             
-            // Задержка для анимации (первые 10 ходов медленнее)
             await new Promise((resolve) => {
                 const timer = setTimeout(resolve, i < 10 ? 300 : 50);
                 currentMatchPromise = { 
@@ -373,7 +359,6 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
         currentMatchPromise = null;
     }
     
-    // Добавляем сводку результатов матча
     const scoreDiv1 = document.createElement('div');
     scoreDiv1.className = `strategy-score ${score1 > score2 ? 'winner' : ''}`;
     scoreDiv1.innerHTML = `<span>${strategy1.name}:</span> <span>${score1} очков</span>`;
@@ -384,7 +369,6 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     scoreDiv2.innerHTML = `<span>${strategy2.name}:</span> <span>${score2} очков</span>`;
     summaryContainer.appendChild(scoreDiv2);
     
-    // Если ничья
     if (score1 === score2) {
         const drawDiv = document.createElement('div');
         drawDiv.className = 'strategy-score';
@@ -400,7 +384,7 @@ async function playSingleMatch(strategy1, strategy2, rounds, matchNumber) {
     };
 }
 
-// Функция для проведения турнира (когда выбрано >2 стратегий)
+// Функция для проведения турнира
 async function playTournament(selectedStrategies, rounds, matches) {
     isPlaying = true;
     document.getElementById('stop-button').style.display = 'block';
@@ -416,41 +400,40 @@ async function playTournament(selectedStrategies, rounds, matches) {
     const resultsContainer = document.createElement('div');
     resultsContainer.className = 'match-results-container';
     
-    // Создаем таблицу для турнирных результатов
     const table = document.createElement('table');
     table.className = 'tournament-table';
     
-    // Заголовок таблицы
     const headerRow = document.createElement('tr');
     const emptyHeader = document.createElement('th');
     emptyHeader.textContent = 'Стратегии \\ Оппоненты';
     headerRow.appendChild(emptyHeader);
     
-    // Добавляем заголовки для всех стратегий
     selectedStrategies.forEach(strategy => {
         const strategyHeader = document.createElement('th');
         strategyHeader.textContent = strategy.name;
         headerRow.appendChild(strategyHeader);
     });
     
-    // Добавляем заголовок для среднего результата
     const avgHeader = document.createElement('th');
     avgHeader.textContent = 'Средний результат';
     headerRow.appendChild(avgHeader);
     
     table.appendChild(headerRow);
     
-    // Инициализируем матрицу результатов
     const resultsMatrix = {};
+    const totalScores = {};
+    
+    // Инициализация структур данных
     selectedStrategies.forEach(strategy => {
         resultsMatrix[strategy.name] = {};
+        totalScores[strategy.name] = 0;
         selectedStrategies.forEach(opponent => {
             resultsMatrix[strategy.name][opponent.name] = 0;
         });
     });
     
     try {
-        // Проводим все матчи между всеми стратегиями
+        // Проведение всех матчей
         for (let i = 0; i < selectedStrategies.length; i++) {
             for (let j = 0; j < selectedStrategies.length; j++) {
                 if (!isPlaying) {
@@ -475,20 +458,25 @@ async function playTournament(selectedStrategies, rounds, matches) {
                     totalScore2 += scores[selectedStrategies[j].name];
                 }
                 
-                // Сохраняем средние результаты
-                resultsMatrix[selectedStrategies[i].name][selectedStrategies[j].name] = totalScore1 / matches;
-                resultsMatrix[selectedStrategies[j].name][selectedStrategies[i].name] = totalScore2 / matches;
+                // Сохранение результатов
+                const avgScore1 = totalScore1 / matches;
+                const avgScore2 = totalScore2 / matches;
+                
+                resultsMatrix[selectedStrategies[i].name][selectedStrategies[j].name] = avgScore1;
+                resultsMatrix[selectedStrategies[j].name][selectedStrategies[i].name] = avgScore2;
+                
+                totalScores[selectedStrategies[i].name] += avgScore1;
+                totalScores[selectedStrategies[j].name] += avgScore2;
             }
         }
         
-        // Заполняем таблицу
+        // Заполнение таблицы
         selectedStrategies.forEach(strategy => {
             const row = document.createElement('tr');
             const strategyLabel = document.createElement('th');
             strategyLabel.textContent = strategy.name;
             row.appendChild(strategyLabel);
             
-            let totalScore = 0;
             let opponentsCount = 0;
             
             selectedStrategies.forEach(opponent => {
@@ -496,18 +484,16 @@ async function playTournament(selectedStrategies, rounds, matches) {
                 const cell = document.createElement('td');
                 cell.textContent = score;
                 
-                // Цветовое оформление на основе количества ходов
                 const maxPossible = rounds * 3;
                 if (score >= maxPossible * 0.7) cell.classList.add('cooperate');
                 else if (score <= maxPossible * 0.4) cell.classList.add('defect');
                 
                 row.appendChild(cell);
-                totalScore += score;
                 opponentsCount++;
             });
             
-            // Добавляем средний результат
-            const avgScore = Math.round(totalScore / opponentsCount);
+            // Средний результат
+            const avgScore = Math.round(totalScores[strategy.name] / (selectedStrategies.length * 2 - 2));
             const avgCell = document.createElement('td');
             avgCell.textContent = avgScore;
             avgCell.style.fontWeight = 'bold';
@@ -515,6 +501,35 @@ async function playTournament(selectedStrategies, rounds, matches) {
             
             table.appendChild(row);
         });
+        
+        // Создание списка топ-3 стратегий
+        const topStrategies = Object.entries(totalScores)
+            .map(([name, score]) => ({ name, score: score / (selectedStrategies.length * 2 - 2) }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);
+        
+        const topStrategiesContainer = document.createElement('div');
+        topStrategiesContainer.className = 'final-summary';
+        topStrategiesContainer.style.marginTop = '20px';
+        
+        const topStrategiesTitle = document.createElement('div');
+        topStrategiesTitle.className = 'scores-title';
+        topStrategiesTitle.textContent = 'Топ-3 стратегии:';
+        topStrategiesContainer.appendChild(topStrategiesTitle);
+        
+        topStrategies.forEach((strategy, index) => {
+            const place = ['🥇', '🥈', '🥉'][index];
+            const strategyDiv = document.createElement('div');
+            strategyDiv.className = 'strategy-score';
+            strategyDiv.innerHTML = `
+                <span>${place} ${strategy.name}:</span>
+                <span>${Math.round(strategy.score)} очков</span>
+            `;
+            topStrategiesContainer.appendChild(strategyDiv);
+        });
+        
+        tournamentContainer.appendChild(topStrategiesContainer);
+        
     } catch (e) {
         if (e.message === 'Tournament stopped by user') {
             const stopDiv = document.createElement('div');
@@ -532,7 +547,7 @@ async function playTournament(selectedStrategies, rounds, matches) {
     document.getElementById('all-matches-results').appendChild(tournamentContainer);
 }
 
-// Обработчик кнопки "Остановить"
+// Обработчики событий
 document.getElementById('stop-button').addEventListener('click', function() {
     isPlaying = false;
     if (currentMatchPromise) {
@@ -541,7 +556,6 @@ document.getElementById('stop-button').addEventListener('click', function() {
     this.style.display = 'none';
 });
 
-// Обработчик кнопки "Сыграть"
 document.getElementById('play-button').addEventListener('click', async function() {
     const selectedStrategies = [];
     document.querySelectorAll('.strategy-checkbox:checked').forEach(checkbox => {
@@ -572,7 +586,6 @@ document.getElementById('play-button').addEventListener('click', async function(
     
     try {
         if (selectedStrategies.length === 2) {
-            // Оригинальный режим для 2 стратегий
             const strategy1 = selectedStrategies[0];
             const strategy2 = selectedStrategies[1];
             
@@ -614,7 +627,6 @@ document.getElementById('play-button').addEventListener('click', async function(
                 }
             }
         } else {
-            // Турнирный режим для 3+ стратегий
             await playTournament(selectedStrategies, rounds, matches);
         }
     } catch (e) {
