@@ -327,3 +327,30 @@ body {
 .help-section ol li {
     margin-bottom: 6px;
 }
+.final-summary {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 15px;
+    width: 50%; 
+    min-width: 300px; 
+    box-sizing: border-box;
+}
+
+.strategy-score {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.strategy-score:last-child {
+    border-bottom: none;
+}
+
+.scores-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #2c3e50;
+}
