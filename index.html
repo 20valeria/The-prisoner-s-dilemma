@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дилемма заключенного</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" id="play-tab">Играть</button>
+            <button class="tab" id="help-tab">Справка</button>
+        </div>
+
+        <div id="play-content">
+            <h1>Дилемма заключенного</h1>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="good">Добрые</button>
+                <button class="filter-btn" data-filter="evil">Злые</button>
+                <button class="filter-btn" data-filter="reset">Сброс</button>
+            </div>
+
+            <div class="strategies-header">Выберите стратегию</div>
+            <div class="strategies-subheader">Нажмите на название стратегии, чтобы увидеть её описание</div>
+
+            <div class="strategies-section">
+                <div class="strategies-list-container">
+                    <div class="strategies-list" id="strategies-list">
+                        <!-- Стратегии будут добавлены через JS -->
+                    </div>
+                </div>
+                
+                <div class="description-panel" id="strategy-description">
+                    <div class="description-title">Описание стратегии</div>
+                    <div class="description-content">
+                        Выберите стратегию из списка слева, чтобы увидеть её описание
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <label>
+                    Количество ходов:
+                    <input type="number" id="rounds-count" value="10" min="1">
+                </label>
+                <label>
+                    Количество матчей (макс. 5):
+                    <input type="number" id="matches-count" value="1" min="1" max="5">
+                </label>
+                <div class="buttons-row">
+                    <button class="play-btn" id="play-button">Сыграть</button>
+                    <button class="stop-btn" id="stop-button">Остановить</button>
+                </div>
+            </div>
+
+            <div class="results-section" id="results-section">
+                <div class="results-title">Результаты матчей</div>
+                <div id="all-matches-results">
+                    <!-- Все результаты матчей будут добавлены через JS -->
+                </div>
+                <div id="final-summary" class="final-summary">
+                    <!-- Финальная сводка будет добавлена через JS -->
+                </div>
+            </div>
+        </div>
+
+        <div id="help-content" class="help-content">
+            
+            <section class="help-section">
+                <h3>Дилемма заключённого</h3>
+                <p>Классическая модель теории игр, показывающая конфликт между личными и коллективными интересами.</p>
+            </section>
+        
+            <section class="help-section">
+                <h3>Правила игры</h3>
+                <p>Два игрока независимо делают выбор:</p>
+                <ul class="rules-list">
+                    <li><strong>Сотрудничать</strong> (Cooperation) - молчать</li>
+                    <li><strong>Предать</strong> (Defection) - дать показания против другого</li>
+                </ul>
+            </section>
+        
+            <section class="help-section">
+                <h3>Возможные исходы</h3>
+                <table class="outcomes-table">
+                    <tr>
+                        <th></th>
+                        <th>Игрок B сотрудничает</th>
+                        <th>Игрок B предаёт</th>
+                    </tr>
+                    <tr>
+                        <th>Игрок A сотрудничает</th>
+                        <td>Оба получают 1 год</td>
+                        <td>A: 3 года, B: 0 лет</td>
+                    </tr>
+                    <tr>
+                        <th>Игрок A предаёт</th>
+                        <td>A: 0 лет, B: 3 года</td>
+                        <td>Оба получают 2 года</td>
+                    </tr>
+                </table>
+            </section>
+        
+            <section class="help-section">
+                <h3>Суть дилеммы</h3>
+                <p>Хотя взаимное сотрудничество выгоднее для обоих, рациональный выбор каждого - предать, так как это:</p>
+                <ol>
+                    <li>Даёт шанс избежать наказания</li>
+                    <li>Защищает от максимального срока</li>
+                </ol>
+                <p>В результате оба часто выбирают предательство, получая худший общий результат.</p>
+            </section>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
