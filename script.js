@@ -127,6 +127,14 @@ const strategies = [
             if (history[history.length - 1][1] === "D") return "D";
             return Math.random() < 2/3 ? "C" : "D";
         }
+    },
+    { 
+        name: "Random", 
+        description: "Случайным образом выбирает между сотрудничеством и предательством с вероятностью 50% на каждом ходу. Не учитывает историю взаимодействий.", 
+        isGood: false,
+        function: function(history) {
+            return Math.random() < 0.5 ? "C" : "D";
+        }
     }
 ];
 
